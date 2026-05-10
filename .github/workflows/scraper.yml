@@ -34,11 +34,10 @@ jobs:
             exit 1
           fi
           echo "DB size: $(du -sh data/seen.db)"
-      - name: Debug gitignore
-        run: git check-ignore -v data/seen.db
-        
+
       - name: Commit DB
         run: |
+          echo "!data/seen.db" >> .gitignore
           git config user.email "bot@base-scout"
           git config user.name "Scout Bot"
           git add data/seen.db
