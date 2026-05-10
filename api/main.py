@@ -1,14 +1,20 @@
 import os, json, logging
+import libsql_client
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
-from api.db import get_client, init_db
+from api.db import init_db
 
 logging.basicConfig(level=logging.INFO)
 app = FastAPI(title="Base Scout API", version="1.0.0")
-
 app.add_middleware(CORSMiddleware, allow_origins=["*"],
                    allow_methods=["*"], allow_headers=["*"])
+
+def make_client():
+    return libsql_client.create_client(
+        url=os.environ["TURSO_URL"],
+        auth_token=os.environ["TURSO_TOKEN"],
+    )
 
 @app.get("/")
 def root():
@@ -21,7 +27,7 @@ async def get_projects(
     limit: int = Query(50, le=200),
     offset: int = Query(0),
 ):
-    async with get_client() as client:
+    async with make_client() as client:
         await init_db(client)
         query = "SELECT * FROM projects WHERE score >= ?"
         params = [min_score]
@@ -40,7 +46,7 @@ async def get_projects(
 
 @app.get("/narratives")
 async def get_narratives():
-    async with get_client() as client:
+    async with make_client() as client:
         await init_db(client)
         rs = await client.execute(
             "SELECT narrative, COUNT(*) as count, AVG(score) as avg_score "
@@ -50,7 +56,7 @@ async def get_narratives():
 
 @app.get("/stats")
 async def get_stats():
-    async with get_client() as client:
+    async with make_client() as client:
         await init_db(client)
         total = (await client.execute("SELECT COUNT(*) FROM projects")).rows[0][0]
         top_rs = await client.execute("SELECT * FROM projects ORDER BY score DESC LIMIT 5")
