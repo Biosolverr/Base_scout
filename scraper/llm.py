@@ -2,11 +2,8 @@ import os
 import json
 import logging
 from groq import Groq
-
 logger = logging.getLogger(__name__)
-
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-
 SYSTEM_PROMPT = """You are a crypto ecosystem analyst specializing in Base blockchain.
 Analyze projects and return ONLY a JSON array. No markdown, no explanation.
 Each item must have exactly these fields:
@@ -16,10 +13,7 @@ Each item must have exactly these fields:
 - tags: array of 2-4 short strings
 - summary: 1-2 sentences about the project
 """
-
 BATCH_SIZE = 10
-
-
 def analyze_batch(items: list[dict]) -> list[dict]:
     enriched = []
     for i in range(0, len(items), BATCH_SIZE):
@@ -32,7 +26,7 @@ def analyze_batch(items: list[dict]) -> list[dict]:
         prompt += f"\n\nReturn a JSON array with exactly {len(batch)} objects in order."
         try:
             resp = client.chat.completions.create(
-                model="llama3-8b-8192",
+                model="llama-3.3-70b-versatile",
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": prompt},
