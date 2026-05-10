@@ -21,6 +21,6 @@ jobs:
       - run: |            # коммитим обновлённую БД обратно в репо
           git config user.email "bot@base-scout"
           git config user.name "Scout Bot"
-          git add data/seen.db
+          git add -f data/seen.db
           git diff --staged --quiet || git commit -m "chore: update db"
           git push
