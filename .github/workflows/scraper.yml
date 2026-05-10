@@ -1,0 +1,12 @@
+name: Scraper
+on:
+  schedule:
+    - cron: '0 8,20 * * *'
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run scraper
+        run: curl https://base-scout.vercel.app/api/cron
