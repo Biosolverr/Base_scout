@@ -1,0 +1,6 @@
+.env
+data/seen.db
+__pycache__/
+*.pyc
+app/node_modules/
+app/.next/
