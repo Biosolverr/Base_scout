@@ -2,12 +2,6 @@ import os
 import libsql_client
 
 def get_client():
-    return libsql_client.create_client_sync(
-        url=os.environ["TURSO_URL"],
-        auth_token=os.environ["TURSO_TOKEN"],
-    )
-
-async def get_async_client():
     return libsql_client.create_client(
         url=os.environ["TURSO_URL"],
         auth_token=os.environ["TURSO_TOKEN"],
