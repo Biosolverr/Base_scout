@@ -64,3 +64,12 @@ async def get_stats():
         def to_list(rs):
             return [dict(zip([c.name for c in rs.columns], row)) for row in rs.rows]
         return {"total_projects": total, "top_projects": to_list(top_rs), "latest_projects": to_list(latest_rs)}
+
+@app.get("/api/cron")
+async def cron():
+    import asyncio
+    import sys
+    sys.path.insert(0, ".")
+    from scraper.main import run
+    asyncio.create_task(run())
+    return {"status": "scraper started"}
