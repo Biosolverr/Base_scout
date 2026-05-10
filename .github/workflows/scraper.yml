@@ -9,4 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run scraper
-        run: curl https://base-scout.vercel.app/api/cron
+        run: curl https://base-scout-api.onrender.com/api/cron
