@@ -16,6 +16,10 @@ def make_client():
         auth_token=os.environ["TURSO_TOKEN"],
     )
 
+def rows_to_dicts(rs):
+    cols = rs.columns
+    return [dict(zip(cols, row)) for row in rs.rows]
+
 @app.get("/")
 def root():
     return {"name": "Base Scout API", "version": "1.0.0", "status": "ok"}
@@ -38,10 +42,9 @@ async def get_projects(
         params += [limit, offset]
         rs = await client.execute(query, params)
         projects = []
-        for row in rs.rows:
-            d = dict(zip([c.name for c in rs.columns], row))
-            d["tags"] = json.loads(d.get("tags") or "[]")
-            projects.append(d)
+        for row in rows_to_dicts(rs):
+            row["tags"] = json.loads(row.get("tags") or "[]")
+            projects.append(row)
         return {"projects": projects, "count": len(projects)}
 
 @app.get("/narratives")
@@ -52,7 +55,7 @@ async def get_narratives():
             "SELECT narrative, COUNT(*) as count, AVG(score) as avg_score "
             "FROM projects GROUP BY narrative ORDER BY count DESC"
         )
-        return {"narratives": [dict(zip([c.name for c in rs.columns], row)) for row in rs.rows]}
+        return {"narratives": rows_to_dicts(rs)}
 
 @app.get("/stats")
 async def get_stats():
@@ -61,15 +64,11 @@ async def get_stats():
         total = (await client.execute("SELECT COUNT(*) FROM projects")).rows[0][0]
         top_rs = await client.execute("SELECT * FROM projects ORDER BY score DESC LIMIT 5")
         latest_rs = await client.execute("SELECT * FROM projects ORDER BY created_at DESC LIMIT 5")
-        def to_list(rs):
-            return [dict(zip([c.name for c in rs.columns], row)) for row in rs.rows]
-        return {"total_projects": total, "top_projects": to_list(top_rs), "latest_projects": to_list(latest_rs)}
+        return {"total_projects": total, "top_projects": rows_to_dicts(top_rs), "latest_projects": rows_to_dicts(latest_rs)}
 
 @app.get("/api/cron")
 async def cron():
     import asyncio
-    import sys
-    sys.path.insert(0, ".")
     from scraper.main import run
     asyncio.create_task(run())
     return {"status": "scraper started"}
