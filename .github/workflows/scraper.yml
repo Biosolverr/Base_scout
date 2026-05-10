@@ -40,6 +40,7 @@ jobs:
           echo "!data/seen.db" >> .gitignore
           git config user.email "bot@base-scout"
           git config user.name "Scout Bot"
-          git add data/seen.db
+          git config set advice.addIgnoredFile false
+          git add -f data/seen.db
           git diff --staged --quiet && echo "Nothing to commit" || git commit -m "chore: update db"
           git push
