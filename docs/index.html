@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<meta name="base:app_id" content="6a00924bef4989446dc30c5b">
 <meta charset="UTF-8">
-<meta name="base:app_id" content="6a00924bef4989446dc30c5b" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Base Scout</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --blue: #0052FF;
@@ -24,161 +28,700 @@
     --cyan: #4FC3F7;
     --border: rgba(0,82,255,0.15);
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; overflow-x: hidden; }
-  body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,82,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,82,255,0.04) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
-  body::after { content: ''; position: fixed; top: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 500px; background: radial-gradient(ellipse, rgba(0,82,255,0.12) 0%, transparent 70%); pointer-events: none; z-index: 0; }
-  header { position: sticky; top: 0; z-index: 100; background: rgba(5,8,15,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 24px; }
-  .header-inner { max-width: 1400px; margin: 0 auto; height: 64px; display: flex; align-items: center; justify-content: space-between; }
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-hex { font-size: 24px; color: var(--blue); filter: drop-shadow(0 0 8px rgba(0,82,255,0.6)); animation: pulse 3s ease-in-out infinite; }
-  @keyframes pulse { 0%, 100% { filter: drop-shadow(0 0 8px rgba(0,82,255,0.6)); } 50% { filter: drop-shadow(0 0 16px rgba(0,82,255,0.9)); } }
-  .logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, #fff 0%, var(--blue-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .stats-badge { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--blue-light); background: rgba(0,82,255,0.1); border: 1px solid rgba(0,82,255,0.3); padding: 4px 12px; border-radius: 20px; }
-  .main { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 32px 24px 80px; }
-  .hero { text-align: center; padding: 48px 0 40px; }
-  .hero-title { font-size: clamp(36px, 6vw, 72px); font-weight: 800; line-height: 1; letter-spacing: -2px; margin-bottom: 16px; }
-  .hero-title span { background: linear-gradient(135deg, #fff 0%, var(--blue-light) 50%, var(--cyan) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .hero-sub { font-size: 16px; color: var(--text-dim); font-weight: 400; letter-spacing: 0.3px; }
-  .filters { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; margin-bottom: 32px; display: flex; flex-direction: column; gap: 12px; }
-  .narrative-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
-  .narrative-scroll::-webkit-scrollbar { display: none; }
-  .pill { flex-shrink: 0; padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-  .pill:hover { border-color: var(--blue); color: var(--text); }
-  .pill.active { background: var(--blue); border-color: var(--blue); color: #fff; box-shadow: 0 0 16px rgba(0,82,255,0.4); }
-  .score-row { display: flex; align-items: center; gap: 8px; }
-  .score-label { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-right: 4px; }
-  .score-pill { width: 40px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); font-family: 'Space Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.2s; }
-  .score-pill:hover { border-color: var(--blue); color: var(--text); }
-  .score-pill.active { color: #000; font-weight: 700; border-color: transparent; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 10px; transition: all 0.25s; position: relative; overflow: hidden; animation: fadeUp 0.4s ease both; }
-  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--blue), transparent); opacity: 0; transition: opacity 0.3s; }
-  .card:hover { border-color: rgba(0,82,255,0.4); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,82,255,0.12); }
-  .card:hover::before { opacity: 1; }
-  .card-header { display: flex; align-items: center; justify-content: space-between; }
-  .card-meta { display: flex; align-items: center; gap: 6px; }
-  .narrative-badge { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: rgba(0,82,255,0.15); color: var(--blue-light); text-transform: uppercase; letter-spacing: 0.5px; }
-  .score-chip { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; color: #000; }
-  .source { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
-  .card-title { font-size: 16px; font-weight: 700; line-height: 1.3; letter-spacing: -0.3px; }
-  .why { font-size: 13px; color: var(--cyan); line-height: 1.5; font-weight: 600; }
-  .summary { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
-  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-  .tag { font-family: 'Space Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid rgba(255,255,255,0.08); }
-  .loading { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 80px 0; color: var(--text-dim); }
-  .spinner { width: 40px; height: 40px; border: 2px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .empty { text-align: center; padding: 80px 0; color: var(--text-dim); font-size: 15px; }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .hero-title { font-size: 36px; } }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,82,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,82,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 500px;
+    background: radial-gradient(ellipse, rgba(0,82,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(5,8,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+  }
+
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-hex {
+    font-size: 24px;
+    color: var(--blue);
+    filter: drop-shadow(0 0 8px rgba(0,82,255,0.6));
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      filter: drop-shadow(0 0 8px rgba(0,82,255,0.6));
+    }
+
+    50% {
+      filter: drop-shadow(0 0 16px rgba(0,82,255,0.9));
+    }
+  }
+
+  .logo-text {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #fff 0%, var(--blue-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .stats-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--blue-light);
+    background: rgba(0,82,255,0.1);
+    border: 1px solid rgba(0,82,255,0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  .main {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 48px 0 40px;
+  }
+
+  .hero-title {
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+  }
+
+  .hero-title span {
+    background: linear-gradient(
+      135deg,
+      #fff 0%,
+      var(--blue-light) 50%,
+      var(--cyan) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--text-dim);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+  }
+
+  .filters {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .narrative-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .narrative-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pill {
+    flex-shrink: 0;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .pill:hover {
+    border-color: var(--blue);
+    color: var(--text);
+  }
+
+  .pill.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+    box-shadow: 0 0 16px rgba(0,82,255,0.4);
+  }
+
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .score-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-right: 4px;
+  }
+
+  .score-pill {
+    width: 40px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .score-pill:hover {
+    border-color: var(--blue);
+    color: var(--text);
+  }
+
+  .score-pill.active {
+    color: #000;
+    font-weight: 700;
+    border-color: transparent;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .card:hover {
+    border-color: rgba(0,82,255,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,82,255,0.12);
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .narrative-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(0,82,255,0.15);
+    color: var(--blue-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .score-chip {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: #000;
+  }
+
+  .source {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+  }
+
+  .why {
+    font-size: 13px;
+    color: var(--cyan);
+    line-height: 1.5;
+    font-weight: 600;
+  }
+
+  .summary {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    color: var(--text-dim);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 80px 0;
+    color: var(--text-dim);
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--border);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .empty {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--text-dim);
+    font-size: 15px;
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-title {
+      font-size: 36px;
+    }
+  }
 </style>
 </head>
+
 <body>
+
 <header>
   <div class="header-inner">
     <div class="logo">
       <span class="logo-hex">⬡</span>
       <span class="logo-text">Base Scout</span>
     </div>
-    <span class="stats-badge" id="stats-badge">loading…</span>
+
+    <span class="stats-badge" id="stats-badge">
+      loading…
+    </span>
   </div>
 </header>
+
 <main class="main">
+
   <div class="hero">
-    <h1 class="hero-title"><span>Discover Base</span></h1>
-    <p class="hero-sub">AI-curated projects on the Base ecosystem — updated twice daily</p>
+    <h1 class="hero-title">
+      <span>Discover Base</span>
+    </h1>
+
+    <p class="hero-sub">
+      AI-curated projects on the Base ecosystem — updated twice daily
+    </p>
   </div>
+
   <div class="filters">
+
     <div class="narrative-scroll" id="narratives"></div>
+
     <div class="score-row">
       <span class="score-label">Min score</span>
       <div id="scores"></div>
     </div>
+
   </div>
+
   <div id="content">
-    <div class="loading"><div class="spinner"></div><span>Scanning Base ecosystem…</span></div>
+    <div class="loading">
+      <div class="spinner"></div>
+      <span>Scanning Base ecosystem…</span>
+    </div>
   </div>
+
 </main>
+
 <script>
+
 const API = 'https://base-scout-api.onrender.com';
-const NARRATIVES = ['all','DeFi','AI agents','social','memecoins','creator tools','infrastructure','gaming','NFT','other'];
-const SCORE_COLORS = { 5:'#00D395', 4:'#4FC3F7', 3:'#FFB347', 2:'#FF8A65', 1:'#EF5350' };
+
+const NARRATIVES = [
+  'all',
+  'DeFi',
+  'AI agents',
+  'social',
+  'memecoins',
+  'creator tools',
+  'infrastructure',
+  'gaming',
+  'NFT',
+  'other'
+];
+
+const SCORE_COLORS = {
+  5:'#00D395',
+  4:'#4FC3F7',
+  3:'#FFB347',
+  2:'#FF8A65',
+  1:'#EF5350'
+};
+
 let currentNarrative = 'all';
 let currentScore = 1;
+
 const narrativeEl = document.getElementById('narratives');
+
 NARRATIVES.forEach(n => {
+
   const btn = document.createElement('button');
-  btn.className = 'pill' + (n === 'all' ? ' active' : '');
+
+  btn.className =
+    'pill' + (n === 'all' ? ' active' : '');
+
   btn.textContent = n;
+
   btn.onclick = () => {
+
     currentNarrative = n;
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+
+    document
+      .querySelectorAll('.pill')
+      .forEach(p => p.classList.remove('active'));
+
     btn.classList.add('active');
+
     loadProjects();
   };
+
   narrativeEl.appendChild(btn);
 });
+
 const scoresEl = document.getElementById('scores');
+
 scoresEl.style.display = 'flex';
 scoresEl.style.gap = '6px';
+
 [1,2,3,4,5].forEach(s => {
+
   const btn = document.createElement('button');
-  btn.className = 'score-pill' + (s === 1 ? ' active' : '');
+
+  btn.className =
+    'score-pill' + (s === 1 ? ' active' : '');
+
   btn.textContent = s + '★';
-  if (s === 1) btn.style.background = SCORE_COLORS[s];
-  btn.onclick = () => {
-    currentScore = s;
-    document.querySelectorAll('.score-pill').forEach(p => { p.classList.remove('active'); p.style.background = ''; });
-    btn.classList.add('active');
+
+  if (s === 1) {
     btn.style.background = SCORE_COLORS[s];
+  }
+
+  btn.onclick = () => {
+
+    currentScore = s;
+
+    document
+      .querySelectorAll('.score-pill')
+      .forEach(p => {
+        p.classList.remove('active');
+        p.style.background = '';
+      });
+
+    btn.classList.add('active');
+
+    btn.style.background = SCORE_COLORS[s];
+
     loadProjects();
   };
+
   scoresEl.appendChild(btn);
 });
-fetch(`${API}/stats`).then(r => r.json()).then(d => { document.getElementById('stats-badge').textContent = d.total_projects + ' projects tracked'; }).catch(() => { document.getElementById('stats-badge').textContent = 'API offline'; });
+
+fetch(`${API}/stats`)
+  .then(r => r.json())
+  .then(d => {
+
+    document.getElementById('stats-badge').textContent =
+      d.total_projects + ' projects tracked';
+
+  })
+  .catch(() => {
+
+    document.getElementById('stats-badge').textContent =
+      'API offline';
+
+  });
+
 async function loadProjects() {
+
   const content = document.getElementById('content');
-  content.innerHTML = '<div class="loading"><div class="spinner"></div><span>Scanning Base ecosystem…</span></div>';
+
+  content.innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      <span>Scanning Base ecosystem…</span>
+    </div>
+  `;
+
   try {
-    const params = new URLSearchParams({ narrative: currentNarrative, min_score: currentScore, limit: 60 });
-    const res = await fetch(`${API}/projects?${params}`);
+
+    const params = new URLSearchParams({
+      narrative: currentNarrative,
+      min_score: currentScore,
+      limit: 60
+    });
+
+    const res =
+      await fetch(`${API}/projects?${params}`);
+
     const data = await res.json();
+
     const projects = data.projects || [];
-    if (projects.length === 0) { content.innerHTML = '<div class="empty">No projects found. Try adjusting filters.</div>'; return; }
-    const grid = document.createElement('div');
-    grid.className = 'grid';
-    projects.forEach((p, i) => {
-      const card = document.createElement('a');
-      card.className = 'card';
-      card.href = p.url;
-      card.target = '_blank';
-      card.rel = 'noopener noreferrer';
-      card.style.animationDelay = (i * 30) + 'ms';
-      const scoreColor = SCORE_COLORS[p.score] || '#888';
-      const tags = (p.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
-      card.innerHTML = `
-        <div class="card-header">
-          <div class="card-meta">
-            <span class="narrative-badge">${p.narrative || 'other'}</span>
-            <span class="score-chip" style="background:${scoreColor}">${p.score}★</span>
-          </div>
-          <span class="source">${p.source || ''}</span>
+
+    if (projects.length === 0) {
+
+      content.innerHTML = `
+        <div class="empty">
+          No projects found. Try adjusting filters.
         </div>
-        <h3 class="card-title">${p.name || 'Untitled'}</h3>
-        ${p.why_interesting ? `<p class="why">${p.why_interesting}</p>` : ''}
-        ${p.summary ? `<p class="summary">${p.summary}</p>` : ''}
-        ${tags ? `<div class="tags">${tags}</div>` : ''}
       `;
+
+      return;
+    }
+
+    const grid = document.createElement('div');
+
+    grid.className = 'grid';
+
+    projects.forEach((p, i) => {
+
+      const card = document.createElement('a');
+
+      card.className = 'card';
+
+      card.href = p.url;
+
+      card.target = '_blank';
+
+      card.rel = 'noopener noreferrer';
+
+      card.style.animationDelay =
+        (i * 30) + 'ms';
+
+      const scoreColor =
+        SCORE_COLORS[p.score] || '#888';
+
+      const tags =
+        (p.tags || [])
+        .map(t => `<span class="tag">${t}</span>`)
+        .join('');
+
+      card.innerHTML = `
+
+        <div class="card-header">
+
+          <div class="card-meta">
+
+            <span class="narrative-badge">
+              ${p.narrative || 'other'}
+            </span>
+
+            <span
+              class="score-chip"
+              style="background:${scoreColor}"
+            >
+              ${p.score}★
+            </span>
+
+          </div>
+
+          <span class="source">
+            ${p.source || ''}
+          </span>
+
+        </div>
+
+        <h3 class="card-title">
+          ${p.name || 'Untitled'}
+        </h3>
+
+        ${
+          p.why_interesting
+          ? `<p class="why">${p.why_interesting}</p>`
+          : ''
+        }
+
+        ${
+          p.summary
+          ? `<p class="summary">${p.summary}</p>`
+          : ''
+        }
+
+        ${
+          tags
+          ? `<div class="tags">${tags}</div>`
+          : ''
+        }
+
+      `;
+
       grid.appendChild(card);
     });
+
     content.innerHTML = '';
+
     content.appendChild(grid);
+
   } catch (e) {
-    content.innerHTML = '<div class="empty">Could not connect to API. Make sure the backend is running.</div>';
+
+    content.innerHTML = `
+      <div class="empty">
+        Could not connect to API.
+        Make sure the backend is running.
+      </div>
+    `;
   }
 }
+
 loadProjects();
+
 </script>
+
 </body>
 </html>
